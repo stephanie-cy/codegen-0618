@@ -1,0 +1,39 @@
+name: automerge
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+  check_suite:
+    types:
+      - completed
+  status: {}
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    steps:
+      - name: Enable Automerge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: 
+          GITHUB_TOKEN: 
+      - id: automerge
+        name: automerge
+        uses: "pascalgn/automerge-action@v0.16.3"
+        env:
+          GITHUB_TOKEN: ""
+          MERGE_LABELS: "automerge"
+      - name: feedback
+        if: false
+        run: |
+          echo "Pull request  merged!"
